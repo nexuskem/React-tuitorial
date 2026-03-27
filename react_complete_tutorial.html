@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Complete React Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --accent: #61dafb;
+    --accent2: #f7df1e;
+    --accent3: #ff6b6b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+    --done: #22c55e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .sidebar-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .sidebar-subtitle { font-size: 11px; color: var(--muted); }
+
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 99px;
+    height: 4px;
+    margin-top: 8px;
+  }
+  .progress-bar-fill {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .nav-section { padding: 16px 12px 8px; }
+  .nav-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(97,218,251,0.08); color: var(--accent); border-color: rgba(97,218,251,0.2); }
+  .nav-item.done { color: var(--done); }
+  .nav-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+  .nav-item.active .nav-num { background: var(--accent); color: #000; }
+  .nav-item.done .nav-num { background: var(--done); color: #000; }
+
+  /* MAIN */
+  #main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px;
+    max-width: 860px;
+  }
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-track { background: transparent; }
+  #main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(97,218,251,0.1);
+    border: 1px solid rgba(97,218,251,0.25);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 36px 0 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2::before {
+    content: '';
+    width: 3px; height: 20px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 24px 0 8px;
+    color: var(--accent2);
+  }
+  p { margin-bottom: 14px; color: #cbd5e1; }
+  strong { color: var(--text); font-weight: 500; }
+  em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+  .lead {
+    font-size: 17px;
+    color: #94a3b8;
+    margin-bottom: 32px;
+    line-height: 1.8;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    overflow-x: auto;
+    position: relative;
+  }
+  pre::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -1px; right: 16px;
+    background: var(--accent);
+    color: #000;
+    font-size: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 0 0 6px 6px;
+  }
+  code {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #e2e8f0;
+  }
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .tag { color: #f07178; }
+  .attr { color: #ffcb6b; }
+  .num { color: #f78c6c; }
+  .var { color: #eeffff; }
+  .jsx { color: #89ddff; }
+
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-left: 3px solid;
+    font-size: 14px;
+  }
+  .callout.tip { background: rgba(34,197,94,0.08); border-color: var(--done); }
+  .callout.tip strong { color: var(--done); }
+  .callout.warn { background: rgba(247,223,30,0.08); border-color: var(--accent2); }
+  .callout.warn strong { color: var(--accent2); }
+  .callout.info { background: rgba(97,218,251,0.08); border-color: var(--accent); }
+  .callout.info strong { color: var(--accent); }
+  .callout.danger { background: rgba(255,107,107,0.08); border-color: var(--accent3); }
+  .callout.danger strong { color: var(--accent3); }
+
+  .concept-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0 24px;
+  }
+  .concept-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    color: #94a3b8;
+  }
+  .concept-list li .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .concept-list li strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 2px; }
+
+  .ic {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0 28px;
+  }
+  .topic-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .topic-card:hover { border-color: rgba(97,218,251,0.3); }
+  .topic-card .tc-icon { font-size: 24px; margin-bottom: 8px; }
+  .topic-card .tc-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .topic-card .tc-desc { font-size: 12px; color: var(--muted); }
+
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #89e9ff; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-done { background: rgba(34,197,94,0.15); color: var(--done); border: 1px solid rgba(34,197,94,0.3); margin-left: auto; }
+  .btn-done:hover { background: rgba(34,197,94,0.25); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  .welcome-hero {
+    background: linear-gradient(135deg, rgba(97,218,251,0.08), rgba(247,223,30,0.04));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-hero::after {
+    content: 'React';
+    position: absolute;
+    right: 24px; top: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 64px;
+    opacity: 0.04;
+    color: var(--accent);
+  }
+  .roadmap-steps { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
+  .rs-item {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .rs-item:last-child { border-bottom: none; }
+  .rs-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(97,218,251,0.15);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .rs-content strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+  .rs-content span { font-size: 12px; color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid rgba(30,45,69,0.5); color: #94a3b8; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(97,218,251,0.03); }
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon">&#9883;</div>
+      <div>
+        <div class="sidebar-title">React Mastery</div>
+        <div class="sidebar-subtitle">Complete Tutorial</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 of 12 completed</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Start Here</div>
+    <div class="nav-item active" onclick="goto(0)" id="nav0"><div class="nav-num">&#9733;</div> Welcome &amp; Roadmap</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Foundation</div>
+    <div class="nav-item" onclick="goto(1)" id="nav1"><div class="nav-num">1</div> What is React?</div>
+    <div class="nav-item" onclick="goto(2)" id="nav2"><div class="nav-num">2</div> Setup &amp; First App</div>
+    <div class="nav-item" onclick="goto(3)" id="nav3"><div class="nav-num">3</div> JSX Deep Dive</div>
+    <div class="nav-item" onclick="goto(4)" id="nav4"><div class="nav-num">4</div> Components</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <div class="nav-item" onclick="goto(5)" id="nav5"><div class="nav-num">5</div> Props</div>
+    <div class="nav-item" onclick="goto(6)" id="nav6"><div class="nav-num">6</div> State &amp; useState</div>
+    <div class="nav-item" onclick="goto(7)" id="nav7"><div class="nav-num">7</div> Events &amp; Forms</div>
+    <div class="nav-item" onclick="goto(8)" id="nav8"><div class="nav-num">8</div> useEffect &amp; Lifecycle</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced</div>
+    <div class="nav-item" onclick="goto(9)" id="nav9"><div class="nav-num">9</div> More Hooks</div>
+    <div class="nav-item" onclick="goto(10)" id="nav10"><div class="nav-num">10</div> Context API</div>
+    <div class="nav-item" onclick="goto(11)" id="nav11"><div class="nav-num">11</div> React Router</div>
+    <div class="nav-item" onclick="goto(12)" id="nav12"><div class="nav-num">12</div> What's Next</div>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- 0: WELCOME -->
+<div class="section active" id="s0">
+  <div class="section-badge">&#9883; Complete Tutorial</div>
+  <h1>Learn React From Zero to Job-Ready</h1>
+  <p class="lead">This tutorial walks you through every core concept you need to build real React applications — with working code examples at every step.</p>
+
+  <div class="welcome-hero">
+    <h3 style="margin-top:0">Your Learning Roadmap</h3>
+    <div class="roadmap-steps">
+      <div class="rs-item"><div class="rs-num">1</div><div class="rs-content"><strong>Foundation (Ch 1-4)</strong><span>What React is, setup, JSX, and how components work</span></div></div>
+      <div class="rs-item"><div class="rs-num">2</div><div class="rs-content"><strong>Core Concepts (Ch 5-8)</strong><span>Props, state, events, forms, and the component lifecycle</span></div></div>
+      <div class="rs-item"><div class="rs-num">3</div><div class="rs-content"><strong>Advanced (Ch 9-12)</strong><span>More hooks, Context API, routing, and where to go next</span></div></div>
+    </div>
+  </div>
+
+  <div class="topic-grid">
+    <div class="topic-card"><div class="tc-icon">&#8987;</div><div class="tc-title">~25 hours total</div><div class="tc-desc">At a comfortable pace with practice exercises</div></div>
+    <div class="topic-card"><div class="tc-icon">&#129504;</div><div class="tc-title">Prerequisites</div><div class="tc-desc">Basic HTML, CSS, and JavaScript (especially ES6+)</div></div>
+    <div class="topic-card"><div class="tc-icon">&#128218;</div><div class="tc-title">12 Chapters</div><div class="tc-desc">Each builds on the last with real code examples</div></div>
+    <div class="topic-card"><div class="tc-icon">&#128640;</div><div class="tc-title">Project-focused</div><div class="tc-desc">Build things as you learn, not just read</div></div>
+  </div>
+
+  <div class="callout tip"><strong>Tip:</strong> Mark each chapter done when you finish using the green button at the bottom. Your progress is tracked in the sidebar.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-primary" onclick="goto(1)">Start Learning &rarr;</button>
+  </div>
+</div>
+
+<!-- 1: WHAT IS REACT -->
+<div class="section" id="s1">
+  <div class="section-badge">Chapter 1</div>
+  <h1>What is React?</h1>
+  <p class="lead">React is a JavaScript <strong>library</strong> for building user interfaces. Created by Facebook in 2013, it is now maintained by Meta and a massive open-source community.</p>
+
+  <h2>The Core Idea</h2>
+  <p>Before React, building UIs meant manually manipulating the DOM — finding elements, changing their content, updating classes. It worked, but became a nightmare as apps grew.</p>
+  <p>React flips the model: <em>you describe what the UI should look like</em> at any given moment, and React figures out how to update the DOM efficiently. You stop thinking about DOM manipulation and start thinking about <strong>state and data</strong>.</p>
+
+  <pre data-label="concept"><code><span class="cmt">// Old way: imperative (you tell the browser HOW)</span>
+<span class="kw">const</span> <span class="var">el</span> = document.<span class="fn">getElementById</span>(<span class="str">'count'</span>)
+el.textContent = <span class="str">`Count: ${count}`</span>
+
+<span class="cmt">// React way: declarative (you describe WHAT it looks like)</span>
+<span class="kw">return</span> <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Count: {count}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span></code></pre>
+
+  <h2>Why React?</h2>
+  <ul class="concept-list">
+    <li><div class="icon">&#129513;</div><div><strong>Component-based</strong>Your UI is made of small, reusable pieces. Build once, use everywhere.</div></li>
+    <li><div class="icon">&#9889;</div><div><strong>Virtual DOM</strong>React keeps a virtual copy of the DOM and only updates what actually changed — making it fast.</div></li>
+    <li><div class="icon">&#127754;</div><div><strong>Unidirectional data flow</strong>Data flows down from parent to child. Predictable, easy to debug.</div></li>
+    <li><div class="icon">&#127758;</div><div><strong>Massive ecosystem</strong>React Native for mobile, Next.js for full-stack, thousands of libraries, and millions of jobs worldwide.</div></li>
+  </ul>
+
+  <h2>React vs the Alternatives</h2>
+  <table>
+    <tr><th>Framework</th><th>By</th><th>Style</th><th>Learning Curve</th></tr>
+    <tr><td>React</td><td>Meta</td><td>Library (bring your own router, etc.)</td><td>Moderate</td></tr>
+    <tr><td>Vue</td><td>Community</td><td>Progressive framework</td><td>Easy</td></tr>
+    <tr><td>Angular</td><td>Google</td><td>Full opinionated framework</td><td>Steep</td></tr>
+    <tr><td>Svelte</td><td>Community</td><td>Compiler-based</td><td>Easy-Moderate</td></tr>
+  </table>
+
+  <div class="callout info"><strong>Note:</strong> React is technically a <em>library</em>, not a framework. It only handles the view layer. For routing, data fetching, and state management you pull in separate tools — covered later.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(0)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(2)">Next: Setup &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(1)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 2: SETUP -->
+<div class="section" id="s2">
+  <div class="section-badge">Chapter 2</div>
+  <h1>Setup &amp; Your First App</h1>
+  <p class="lead">Two main ways to start a React project: <strong>Vite</strong> (modern, fast, recommended) or <strong>Create React App</strong> (older, heavier). We'll use Vite.</p>
+
+  <h2>Prerequisites</h2>
+  <p>Make sure you have <strong>Node.js</strong> installed (v18 or higher). Check with:</p>
+  <pre data-label="terminal"><code>node --version
+npm --version</code></pre>
+
+  <h2>Create a React App with Vite</h2>
+  <pre data-label="terminal"><code><span class="cmt"># Create new project</span>
+npm create vite@latest my-app -- --template react
+
+<span class="cmt"># Move into the folder</span>
+cd my-app
+
+<span class="cmt"># Install dependencies</span>
+npm install
+
+<span class="cmt"># Start dev server</span>
+npm run dev</code></pre>
+
+  <p>Open <span class="ic">http://localhost:5173</span> and you'll see your React app running!</p>
+
+  <h2>Project Structure</h2>
+  <pre data-label="folder structure"><code>my-app/
+├── public/          <span class="cmt"># Static files</span>
+├── src/
+│   ├── App.jsx      <span class="cmt"># Your root component</span>
+│   ├── App.css      <span class="cmt"># Styles for App</span>
+│   ├── main.jsx     <span class="cmt"># Entry point — mounts React to the DOM</span>
+│   └── index.css    <span class="cmt"># Global styles</span>
+├── index.html       <span class="cmt"># HTML template</span>
+└── package.json</code></pre>
+
+  <h2>Understanding main.jsx</h2>
+  <pre data-label="src/main.jsx"><code><span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App.jsx'</span>
+
+<span class="cmt">// Find the &lt;div id="root"&gt; in index.html and render your app inside it</span>
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="jsx">&lt;<span class="tag">React.StrictMode</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">App</span> /&gt;</span>
+  <span class="jsx">&lt;/<span class="tag">React.StrictMode</span>&gt;</span>
+)</code></pre>
+
+  <h2>Your First Edit</h2>
+  <p>Open <span class="ic">src/App.jsx</span>, delete everything, and replace with:</p>
+  <pre data-label="src/App.jsx"><code><span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">h1</span>&gt;</span>Hello, React!<span class="jsx">&lt;/<span class="tag">h1</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>My first React app<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+  )
+}
+
+<span class="kw">export default</span> App</code></pre>
+
+  <p>Save it — the browser updates instantly. That's <strong>Hot Module Replacement</strong> (HMR) — no manual refresh needed.</p>
+
+  <div class="callout tip"><strong>VS Code Extensions to install:</strong> ES7+ React/Redux Snippets, Prettier, and ESLint for a smooth dev experience.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(1)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(3)">Next: JSX &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(2)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 3: JSX -->
+<div class="section" id="s3">
+  <div class="section-badge">Chapter 3</div>
+  <h1>JSX Deep Dive</h1>
+  <p class="lead">JSX stands for <strong>JavaScript XML</strong>. It lets you write HTML-like syntax inside JavaScript. It is not HTML — it compiles to <span class="ic">React.createElement()</span> calls under the hood.</p>
+
+  <h2>JSX vs HTML — Key Differences</h2>
+  <table>
+    <tr><th>HTML</th><th>JSX</th><th>Why</th></tr>
+    <tr><td><span class="ic">class="..."</span></td><td><span class="ic">className="..."</span></td><td>class is reserved in JS</td></tr>
+    <tr><td><span class="ic">for="..."</span></td><td><span class="ic">htmlFor="..."</span></td><td>for is reserved in JS</td></tr>
+    <tr><td><span class="ic">&lt;br&gt;</span></td><td><span class="ic">&lt;br /&gt;</span></td><td>All tags must be closed</td></tr>
+    <tr><td><span class="ic">onclick="fn()"</span></td><td><span class="ic">onClick={fn}</span></td><td>camelCase events, JS reference</td></tr>
+    <tr><td><span class="ic">style="color:red"</span></td><td><span class="ic">style={{color: 'red'}}</span></td><td>Styles are JS objects</td></tr>
+  </table>
+
+  <h2>Embedding JavaScript in JSX</h2>
+  <p>Use curly braces <span class="ic">{}</span> to drop any JavaScript expression into JSX:</p>
+  <pre data-label="jsx"><code><span class="kw">const</span> <span class="var">name</span> = <span class="str">'Alice'</span>
+<span class="kw">const</span> <span class="var">score</span> = <span class="num">95</span>
+
+<span class="kw">return</span> (
+  <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">h1</span>&gt;</span>Hello, {name}!<span class="jsx">&lt;/<span class="tag">h1</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Score: {score * 2}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>{score &gt; 90 ? <span class="str">'Pass'</span> : <span class="str">'Retry'</span>}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+  <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+)</code></pre>
+
+  <h2>JSX Must Return One Root Element</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Wrong — two root elements</span>
+<span class="kw">return</span> (
+  <span class="jsx">&lt;<span class="tag">h1</span>&gt;</span>Title<span class="jsx">&lt;/<span class="tag">h1</span>&gt;</span>
+  <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Paragraph<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+)
+
+<span class="cmt">// Option 1 — wrap in a div</span>
+<span class="kw">return</span> (
+  <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">h1</span>&gt;</span>Title<span class="jsx">&lt;/<span class="tag">h1</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Paragraph<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+  <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+)
+
+<span class="cmt">// Option 2 — Fragment (no extra DOM node)</span>
+<span class="kw">return</span> (
+  <span class="jsx">&lt;&gt;</span>
+    <span class="jsx">&lt;<span class="tag">h1</span>&gt;</span>Title<span class="jsx">&lt;/<span class="tag">h1</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Paragraph<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+  <span class="jsx">&lt;/&gt;</span>
+)</code></pre>
+
+  <h2>Rendering Lists</h2>
+  <p>Use <span class="ic">.map()</span> to render arrays. Always provide a unique <span class="ic">key</span> prop:</p>
+  <pre data-label="jsx"><code><span class="kw">const</span> <span class="var">fruits</span> = [<span class="str">'Apple'</span>, <span class="str">'Banana'</span>, <span class="str">'Mango'</span>]
+
+<span class="kw">return</span> (
+  <span class="jsx">&lt;<span class="tag">ul</span>&gt;</span>
+    {fruits.<span class="fn">map</span>((<span class="var">fruit</span>, <span class="var">index</span>) =&gt; (
+      <span class="jsx">&lt;<span class="tag">li</span> <span class="attr">key</span>={index}&gt;</span>{fruit}<span class="jsx">&lt;/<span class="tag">li</span>&gt;</span>
+    ))}
+  <span class="jsx">&lt;/<span class="tag">ul</span>&gt;</span>
+)</code></pre>
+
+  <h2>Conditional Rendering</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Ternary — show one of two things</span>
+{isLoggedIn ? <span class="jsx">&lt;<span class="tag">Dashboard</span> /&gt;</span> : <span class="jsx">&lt;<span class="tag">Login</span> /&gt;</span>}
+
+<span class="cmt">// &amp;&amp; operator — show or show nothing</span>
+{hasError &amp;&amp; <span class="jsx">&lt;<span class="tag">ErrorMessage</span> /&gt;</span>}</code></pre>
+
+  <div class="callout warn"><strong>Watch out:</strong> <span class="ic">0 &amp;&amp; &lt;Component /&gt;</span> renders <strong>0</strong> on screen, not nothing. Use <span class="ic">count &gt; 0 &amp;&amp; ...</span> or <span class="ic">!!count &amp;&amp; ...</span> instead.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(2)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(4)">Next: Components &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(3)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 4: COMPONENTS -->
+<div class="section" id="s4">
+  <div class="section-badge">Chapter 4</div>
+  <h1>Components</h1>
+  <p class="lead">Components are the building blocks of React. A component is a <strong>function that returns JSX</strong>. You compose your entire UI from components — big and small.</p>
+
+  <h2>Function Components</h2>
+  <pre data-label="jsx"><code><span class="cmt">// A simple component — always PascalCase name</span>
+<span class="kw">function</span> <span class="fn">Greeting</span>() {
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>Hello, World!<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+}
+
+<span class="cmt">// Arrow function style — same result</span>
+<span class="kw">const</span> <span class="fn">Greeting</span> = () =&gt; <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>Hello, World!<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+
+<span class="cmt">// Use it like an HTML tag</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Greeting</span> /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Greeting</span> /&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>Composing Components</h2>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">Header</span>() {
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">header</span>&gt;&lt;<span class="tag">h1</span>&gt;</span>My App<span class="jsx">&lt;/<span class="tag">h1</span>&gt;&lt;/<span class="tag">header</span>&gt;</span>
+}
+
+<span class="kw">function</span> <span class="fn">Footer</span>() {
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">footer</span>&gt;</span>&#169; 2025<span class="jsx">&lt;/<span class="tag">footer</span>&gt;</span>
+}
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Header</span> /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">main</span>&gt;</span>Main content<span class="jsx">&lt;/<span class="tag">main</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Footer</span> /&gt;</span>
+    <span class="jsx">&lt;/&gt;</span>
+  )
+}</code></pre>
+
+  <h2>File Structure Convention</h2>
+  <pre data-label="folder"><code>src/
+├── components/
+│   ├── Header.jsx
+│   ├── Footer.jsx
+│   └── Button.jsx
+├── pages/
+│   ├── Home.jsx
+│   └── About.jsx
+└── App.jsx</code></pre>
+
+  <h2>Exporting Components</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Default export — one per file, import with any name</span>
+<span class="kw">export default function</span> <span class="fn">Button</span>() { ... }
+<span class="kw">import</span> Button <span class="kw">from</span> <span class="str">'./Button'</span>
+
+<span class="cmt">// Named export — can have multiple, must use exact name</span>
+<span class="kw">export function</span> <span class="fn">PrimaryButton</span>() { ... }
+<span class="kw">export function</span> <span class="fn">SecondaryButton</span>() { ... }
+<span class="kw">import</span> { PrimaryButton, SecondaryButton } <span class="kw">from</span> <span class="str">'./Button'</span></code></pre>
+
+  <div class="callout tip"><strong>Rule of thumb:</strong> One component per file. Name the file the same as the component. Use PascalCase for both.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(3)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(5)">Next: Props &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(4)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 5: PROPS -->
+<div class="section" id="s5">
+  <div class="section-badge">Chapter 5</div>
+  <h1>Props</h1>
+  <p class="lead">Props (short for <strong>properties</strong>) are how you pass data from a <em>parent</em> component down to a <em>child</em> component. They make your components reusable and dynamic.</p>
+
+  <h2>Passing &amp; Receiving Props</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Parent passes props like HTML attributes</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">Card</span>
+      <span class="attr">title</span>=<span class="str">"React Hooks"</span>
+      <span class="attr">description</span>=<span class="str">"Master useState and useEffect"</span>
+      <span class="attr">rating</span>={5}
+    /&gt;</span>
+  )
+}
+
+<span class="cmt">// Child receives them as a 'props' object</span>
+<span class="kw">function</span> <span class="fn">Card</span>(<span class="var">props</span>) {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>{props.title}<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>{props.description}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Rating: {props.rating}/5<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>Destructuring Props (preferred)</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Much cleaner — destructure in the parameter</span>
+<span class="kw">function</span> <span class="fn">Card</span>({ <span class="var">title</span>, <span class="var">description</span>, <span class="var">rating</span> }) {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>{title}<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>{description}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>Default Props</h2>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">Button</span>({ <span class="var">label</span> = <span class="str">'Click me'</span>, <span class="var">color</span> = <span class="str">'blue'</span> }) {
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">button</span> <span class="attr">style</span>={{color}}&gt;</span>{label}<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+}
+
+<span class="jsx">&lt;<span class="tag">Button</span> /&gt;</span>              <span class="cmt">// Uses both defaults</span>
+<span class="jsx">&lt;<span class="tag">Button</span> <span class="attr">label</span>=<span class="str">"Submit"</span> /&gt;</span> <span class="cmt">// Custom label, default color</span></code></pre>
+
+  <h2>The children Prop</h2>
+  <p>Anything you put <em>between</em> component tags becomes the special <span class="ic">children</span> prop:</p>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">Box</span>({ <span class="var">children</span> }) {
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"box"</span>&gt;</span>{children}<span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+}
+
+<span class="jsx">&lt;<span class="tag">Box</span>&gt;</span>
+  <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>I am inside Box<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+  <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Any content here becomes children<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+<span class="jsx">&lt;/<span class="tag">Box</span>&gt;</span></code></pre>
+
+  <div class="callout danger"><strong>Props are read-only!</strong> Never modify props inside a component. They flow down from parent to child and are immutable. To change data, you need <strong>state</strong>.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(4)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(6)">Next: State &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(5)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 6: STATE -->
+<div class="section" id="s6">
+  <div class="section-badge">Chapter 6</div>
+  <h1>State &amp; useState</h1>
+  <p class="lead">State is <strong>data that changes over time</strong>. When state changes, React re-renders the component with the new values. <span class="ic">useState</span> is the hook that gives components their own memory.</p>
+
+  <h2>Your First useState</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useState } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="kw">function</span> <span class="fn">Counter</span>() {
+  <span class="cmt">// [currentValue, setterFunction] = useState(initialValue)</span>
+  <span class="kw">const</span> [<span class="var">count</span>, <span class="var">setCount</span>] = <span class="fn">useState</span>(<span class="num">0</span>)
+
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">div</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Count: {count}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">button</span> <span class="attr">onClick</span>={() =&gt; setCount(count + 1)}&gt;</span>+<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">button</span> <span class="attr">onClick</span>={() =&gt; setCount(count - 1)}&gt;</span>-<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>State with Objects</h2>
+  <pre data-label="jsx"><code><span class="kw">const</span> [<span class="var">user</span>, <span class="var">setUser</span>] = <span class="fn">useState</span>({ name: <span class="str">'Alice'</span>, age: <span class="num">25</span> })
+
+<span class="cmt">// Never mutate state directly</span>
+user.name = <span class="str">'Bob'</span>  <span class="cmt">// Will NOT trigger re-render!</span>
+
+<span class="cmt">// Always create a new object with spread</span>
+<span class="fn">setUser</span>({ ...user, name: <span class="str">'Bob'</span> })</code></pre>
+
+  <h2>State with Arrays</h2>
+  <pre data-label="jsx"><code><span class="kw">const</span> [<span class="var">todos</span>, <span class="var">setTodos</span>] = <span class="fn">useState</span>([])
+
+<span class="cmt">// Add item</span>
+<span class="fn">setTodos</span>([...todos, newTodo])
+
+<span class="cmt">// Remove item</span>
+<span class="fn">setTodos</span>(todos.<span class="fn">filter</span>(t =&gt; t.id !== id))
+
+<span class="cmt">// Update item</span>
+<span class="fn">setTodos</span>(todos.<span class="fn">map</span>(t =&gt; t.id === id ? { ...t, done: <span class="kw">true</span> } : t))</code></pre>
+
+  <h2>Functional Updates</h2>
+  <p>When new state depends on old state, use the function form of the setter:</p>
+  <pre data-label="jsx"><code><span class="cmt">// Risky if called multiple times rapidly</span>
+<span class="fn">setCount</span>(count + <span class="num">1</span>)
+
+<span class="cmt">// Safe — React guarantees prev is the current value</span>
+<span class="fn">setCount</span>(prev =&gt; prev + <span class="num">1</span>)</code></pre>
+
+  <h2>Lifting State Up</h2>
+  <p>When sibling components need to share state, <strong>lift it up</strong> to their common parent:</p>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">Parent</span>() {
+  <span class="kw">const</span> [<span class="var">value</span>, <span class="var">setValue</span>] = <span class="fn">useState</span>(<span class="str">''</span>)
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Input</span> <span class="attr">value</span>={value} <span class="attr">onChange</span>={setValue} /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Display</span> <span class="attr">value</span>={value} /&gt;</span>
+    <span class="jsx">&lt;/&gt;</span>
+  )
+}</code></pre>
+
+  <div class="callout info"><strong>Key insight:</strong> State updates are <em>asynchronous</em>. After calling <span class="ic">setCount(5)</span>, <span class="ic">count</span> is still the old value on the next line. React batches and applies all updates before the next render.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(5)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(7)">Next: Events &amp; Forms &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(6)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 7: EVENTS & FORMS -->
+<div class="section" id="s7">
+  <div class="section-badge">Chapter 7</div>
+  <h1>Events &amp; Forms</h1>
+  <p class="lead">React uses <strong>synthetic events</strong> — a cross-browser wrapper around native DOM events. Event names are camelCase, and handlers receive an event object.</p>
+
+  <h2>Common Event Handlers</h2>
+  <pre data-label="jsx"><code><span class="cmt">// Click</span>
+<span class="jsx">&lt;<span class="tag">button</span> <span class="attr">onClick</span>={handleClick}&gt;</span>Click<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+
+<span class="cmt">// Input change</span>
+<span class="jsx">&lt;<span class="tag">input</span> <span class="attr">onChange</span>={handleChange} /&gt;</span>
+
+<span class="cmt">// Form submit</span>
+<span class="jsx">&lt;<span class="tag">form</span> <span class="attr">onSubmit</span>={handleSubmit}&gt;</span>...<span class="jsx">&lt;/<span class="tag">form</span>&gt;</span>
+
+<span class="cmt">// Mouse enter / leave</span>
+<span class="jsx">&lt;<span class="tag">div</span> <span class="attr">onMouseEnter</span>={fn} <span class="attr">onMouseLeave</span>={fn}&gt;</span>...<span class="jsx">&lt;/<span class="tag">div</span>&gt;</span>
+
+<span class="cmt">// Key press</span>
+<span class="jsx">&lt;<span class="tag">input</span> <span class="attr">onKeyDown</span>={e =&gt; e.key === 'Enter' &amp;&amp; submit()} /&gt;</span></code></pre>
+
+  <h2>Controlled Components</h2>
+  <p>In a controlled input, React state is the <strong>single source of truth</strong>. Every keystroke updates state, and state drives what the input shows:</p>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">LoginForm</span>() {
+  <span class="kw">const</span> [<span class="var">email</span>, <span class="var">setEmail</span>] = <span class="fn">useState</span>(<span class="str">''</span>)
+  <span class="kw">const</span> [<span class="var">password</span>, <span class="var">setPassword</span>] = <span class="fn">useState</span>(<span class="str">''</span>)
+
+  <span class="kw">const</span> <span class="fn">handleSubmit</span> = (e) =&gt; {
+    e.<span class="fn">preventDefault</span>()  <span class="cmt">// Stop page refresh</span>
+    console.<span class="fn">log</span>({ email, password })
+  }
+
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">form</span> <span class="attr">onSubmit</span>={handleSubmit}&gt;</span>
+      <span class="jsx">&lt;<span class="tag">input</span>
+        <span class="attr">type</span>=<span class="str">"email"</span>
+        <span class="attr">value</span>={email}
+        <span class="attr">onChange</span>={e =&gt; setEmail(e.target.value)}
+      /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">input</span>
+        <span class="attr">type</span>=<span class="str">"password"</span>
+        <span class="attr">value</span>={password}
+        <span class="attr">onChange</span>={e =&gt; setPassword(e.target.value)}
+      /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">button</span> <span class="attr">type</span>=<span class="str">"submit"</span>&gt;</span>Login<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">form</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>Handling Multiple Fields — One Handler</h2>
+  <pre data-label="jsx"><code><span class="kw">const</span> [<span class="var">form</span>, <span class="var">setForm</span>] = <span class="fn">useState</span>({ name: <span class="str">''</span>, email: <span class="str">''</span>, age: <span class="str">''</span> })
+
+<span class="kw">const</span> <span class="fn">handleChange</span> = (e) =&gt; {
+  <span class="kw">const</span> { name, value } = e.target
+  <span class="fn">setForm</span>(prev =&gt; ({ ...prev, [name]: value }))
+}
+
+<span class="cmt">// Give each input a name matching the state key</span>
+<span class="jsx">&lt;<span class="tag">input</span> <span class="attr">name</span>=<span class="str">"name"</span>  <span class="attr">value</span>={form.name}  <span class="attr">onChange</span>={handleChange} /&gt;</span>
+<span class="jsx">&lt;<span class="tag">input</span> <span class="attr">name</span>=<span class="str">"email"</span> <span class="attr">value</span>={form.email} <span class="attr">onChange</span>={handleChange} /&gt;</span></code></pre>
+
+  <div class="callout tip"><strong>For complex forms:</strong> consider <strong>React Hook Form</strong> or <strong>Formik</strong>. They handle validation, touched states, and errors elegantly. Understand controlled inputs first, then graduate to these.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(6)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(8)">Next: useEffect &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(7)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 8: useEffect -->
+<div class="section" id="s8">
+  <div class="section-badge">Chapter 8</div>
+  <h1>useEffect &amp; the Lifecycle</h1>
+  <p class="lead"><span class="ic">useEffect</span> lets you perform <strong>side effects</strong> — things that reach outside of React: API calls, subscriptions, timers, localStorage, and direct DOM access.</p>
+
+  <h2>The Three Patterns</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useEffect } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="cmt">// 1. Runs after EVERY render (rarely what you want)</span>
+<span class="fn">useEffect</span>(() =&gt; {
+  console.<span class="fn">log</span>(<span class="str">'rendered'</span>)
+})
+
+<span class="cmt">// 2. Runs ONCE on mount (empty dependency array)</span>
+<span class="fn">useEffect</span>(() =&gt; {
+  console.<span class="fn">log</span>(<span class="str">'mounted!'</span>)
+  <span class="fn">fetchData</span>()
+}, [])
+
+<span class="cmt">// 3. Runs when specific values change</span>
+<span class="fn">useEffect</span>(() =&gt; {
+  <span class="fn">fetchUserData</span>(userId)
+}, [userId])</code></pre>
+
+  <h2>Fetching Data</h2>
+  <pre data-label="jsx"><code><span class="kw">function</span> <span class="fn">UserProfile</span>({ <span class="var">userId</span> }) {
+  <span class="kw">const</span> [<span class="var">user</span>, <span class="var">setUser</span>] = <span class="fn">useState</span>(<span class="kw">null</span>)
+  <span class="kw">const</span> [<span class="var">loading</span>, <span class="var">setLoading</span>] = <span class="fn">useState</span>(<span class="kw">true</span>)
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">setLoading</span>(<span class="kw">true</span>)
+    fetch(<span class="str">`/api/users/${userId}`</span>)
+      .<span class="fn">then</span>(res =&gt; res.<span class="fn">json</span>())
+      .<span class="fn">then</span>(data =&gt; {
+        <span class="fn">setUser</span>(data)
+        <span class="fn">setLoading</span>(<span class="kw">false</span>)
+      })
+  }, [userId])
+
+  <span class="kw">if</span> (loading) <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>Loading...<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">h2</span>&gt;</span>{user?.name}<span class="jsx">&lt;/<span class="tag">h2</span>&gt;</span>
+}</code></pre>
+
+  <h2>Cleanup Function</h2>
+  <p>Return a function from useEffect to clean up subscriptions or timers when the component unmounts:</p>
+  <pre data-label="jsx"><code><span class="fn">useEffect</span>(() =&gt; {
+  <span class="kw">const</span> timer = <span class="fn">setInterval</span>(() =&gt; {
+    <span class="fn">setTime</span>(t =&gt; t + <span class="num">1</span>)
+  }, <span class="num">1000</span>)
+
+  <span class="cmt">// Runs when component unmounts or before next effect</span>
+  <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(timer)
+}, [])</code></pre>
+
+  <div class="callout warn"><strong>Common mistake:</strong> Including a function in the dependency array that gets recreated every render causes an infinite loop. Define functions inside the effect, or wrap them with <span class="ic">useCallback</span>.</div>
+
+  <div class="callout tip"><strong>Modern alternative:</strong> <strong>TanStack Query</strong> (React Query) handles data fetching, caching, loading states, and errors far better than bare useEffect. Highly recommended once you understand the fundamentals.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(7)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(9)">Next: More Hooks &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(8)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 9: MORE HOOKS -->
+<div class="section" id="s9">
+  <div class="section-badge">Chapter 9</div>
+  <h1>More Hooks</h1>
+  <p class="lead">Beyond <span class="ic">useState</span> and <span class="ic">useEffect</span>, React ships several more hooks for refs, complex state, performance optimization, and building your own reusable logic.</p>
+
+  <h2>useRef</h2>
+  <p>Two main uses: <strong>(1)</strong> access DOM elements directly, <strong>(2)</strong> store a mutable value that persists between renders without triggering re-renders.</p>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useRef, useEffect } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="cmt">// Use 1: DOM access</span>
+<span class="kw">function</span> <span class="fn">AutoFocus</span>() {
+  <span class="kw">const</span> inputRef = <span class="fn">useRef</span>(<span class="kw">null</span>)
+  <span class="fn">useEffect</span>(() =&gt; { inputRef.current.<span class="fn">focus</span>() }, [])
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">input</span> <span class="attr">ref</span>={inputRef} /&gt;</span>
+}
+
+<span class="cmt">// Use 2: Mutable value (no re-render on change)</span>
+<span class="kw">const</span> renderCount = <span class="fn">useRef</span>(<span class="num">0</span>)
+renderCount.current += <span class="num">1</span></code></pre>
+
+  <h2>useReducer</h2>
+  <p>Like <span class="ic">useState</span> but for <strong>complex state logic</strong> — multiple related values, or when next state depends on previous in non-trivial ways:</p>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useReducer } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="kw">const</span> initialState = { count: <span class="num">0</span>, step: <span class="num">1</span> }
+
+<span class="kw">function</span> <span class="fn">reducer</span>(state, action) {
+  <span class="kw">switch</span> (action.type) {
+    <span class="kw">case</span> <span class="str">'increment'</span>: <span class="kw">return</span> { ...state, count: state.count + state.step }
+    <span class="kw">case</span> <span class="str">'decrement'</span>: <span class="kw">return</span> { ...state, count: state.count - state.step }
+    <span class="kw">case</span> <span class="str">'setStep'</span>:   <span class="kw">return</span> { ...state, step: action.payload }
+    <span class="kw">default</span>: <span class="kw">return</span> state
+  }
+}
+
+<span class="kw">function</span> <span class="fn">Counter</span>() {
+  <span class="kw">const</span> [state, dispatch] = <span class="fn">useReducer</span>(reducer, initialState)
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;&gt;</span>
+      <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>{state.count}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">button</span> <span class="attr">onClick</span>={() =&gt; dispatch({ type: 'increment' })}&gt;</span>+<span class="jsx">&lt;/<span class="tag">button</span>&gt;</span>
+    <span class="jsx">&lt;/&gt;</span>
+  )
+}</code></pre>
+
+  <h2>useMemo &amp; useCallback</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useMemo, useCallback } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="cmt">// useMemo — memoize an expensive computed value</span>
+<span class="kw">const</span> result = <span class="fn">useMemo</span>(() =&gt; {
+  <span class="kw">return</span> <span class="fn">expensiveComputation</span>(data)
+}, [data])  <span class="cmt">// Only recalculates when data changes</span>
+
+<span class="cmt">// useCallback — stable function reference across renders</span>
+<span class="kw">const</span> handleClick = <span class="fn">useCallback</span>(() =&gt; {
+  <span class="fn">doSomething</span>(id)
+}, [id])  <span class="cmt">// Only recreates when id changes</span></code></pre>
+
+  <div class="callout warn"><strong>Don't over-optimize:</strong> Add <span class="ic">useMemo</span>/<span class="ic">useCallback</span> only when you've measured a real performance problem. They add complexity and have their own overhead.</div>
+
+  <h2>Custom Hooks</h2>
+  <p>Build your own reusable hooks by composing existing ones. Custom hook names always start with <span class="ic">use</span>:</p>
+  <pre data-label="useFetch.js"><code><span class="kw">function</span> <span class="fn">useFetch</span>(url) {
+  <span class="kw">const</span> [data, setData] = <span class="fn">useState</span>(<span class="kw">null</span>)
+  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">true</span>)
+  <span class="kw">const</span> [error, setError] = <span class="fn">useState</span>(<span class="kw">null</span>)
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="fn">fetch</span>(url)
+      .<span class="fn">then</span>(r =&gt; r.<span class="fn">json</span>())
+      .<span class="fn">then</span>(setData)
+      .<span class="fn">catch</span>(setError)
+      .<span class="fn">finally</span>(() =&gt; <span class="fn">setLoading</span>(<span class="kw">false</span>))
+  }, [url])
+
+  <span class="kw">return</span> { data, loading, error }
+}
+
+<span class="cmt">// Using the custom hook</span>
+<span class="kw">const</span> { data, loading } = <span class="fn">useFetch</span>(<span class="str">'/api/posts'</span>)</code></pre>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(8)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(10)">Next: Context API &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(9)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 10: CONTEXT -->
+<div class="section" id="s10">
+  <div class="section-badge">Chapter 10</div>
+  <h1>Context API</h1>
+  <p class="lead">Context solves <strong>prop drilling</strong> — passing data through many layers of components that don't need it, just to reach a deeply nested child.</p>
+
+  <h2>The Problem (Prop Drilling)</h2>
+  <pre data-label="jsx"><code><span class="cmt">// 'user' needs to reach UserAvatar, but has to pass through everything</span>
+<span class="jsx">&lt;<span class="tag">App</span> <span class="attr">user</span>={user} /&gt;</span>
+  <span class="jsx">&lt;<span class="tag">Header</span> <span class="attr">user</span>={user} /&gt;</span>       <span class="cmt">// doesn't need user</span>
+    <span class="jsx">&lt;<span class="tag">Nav</span> <span class="attr">user</span>={user} /&gt;</span>         <span class="cmt">// doesn't need user</span>
+      <span class="jsx">&lt;<span class="tag">UserAvatar</span> <span class="attr">user</span>={user} /&gt;</span>  <span class="cmt">// finally uses user</span></code></pre>
+
+  <h2>Creating &amp; Using Context</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { createContext, useContext, useState } <span class="kw">from</span> <span class="str">'react'</span>
+
+<span class="cmt">// 1. Create the context</span>
+<span class="kw">const</span> UserContext = <span class="fn">createContext</span>(<span class="kw">null</span>)
+
+<span class="cmt">// 2. Provide it — wrap the component tree that needs access</span>
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>({ name: <span class="str">'Alice'</span> })
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">UserContext.Provider</span> <span class="attr">value</span>={{ user, setUser }}&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Header</span> /&gt;</span>  <span class="cmt">// No user prop needed!</span>
+    <span class="jsx">&lt;/<span class="tag">UserContext.Provider</span>&gt;</span>
+  )
+}
+
+<span class="cmt">// 3. Consume anywhere inside the Provider</span>
+<span class="kw">function</span> <span class="fn">UserAvatar</span>() {
+  <span class="kw">const</span> { user } = <span class="fn">useContext</span>(UserContext)
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">span</span>&gt;</span>{user.name}<span class="jsx">&lt;/<span class="tag">span</span>&gt;</span>
+}</code></pre>
+
+  <h2>Best Practice — Custom Provider + Hook</h2>
+  <pre data-label="UserContext.jsx"><code><span class="kw">const</span> UserContext = <span class="fn">createContext</span>(<span class="kw">null</span>)
+
+<span class="kw">export function</span> <span class="fn">UserProvider</span>({ children }) {
+  <span class="kw">const</span> [user, setUser] = <span class="fn">useState</span>(<span class="kw">null</span>)
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">UserContext.Provider</span> <span class="attr">value</span>={{ user, setUser }}&gt;</span>
+      {children}
+    <span class="jsx">&lt;/<span class="tag">UserContext.Provider</span>&gt;</span>
+  )
+}
+
+<span class="cmt">// Custom hook gives better errors and cleaner imports</span>
+<span class="kw">export function</span> <span class="fn">useUser</span>() {
+  <span class="kw">const</span> context = <span class="fn">useContext</span>(UserContext)
+  <span class="kw">if</span> (!context) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'useUser must be inside UserProvider'</span>)
+  <span class="kw">return</span> context
+}</code></pre>
+
+  <div class="callout warn"><strong>Context is not a Redux replacement.</strong> Every consumer re-renders when the context value changes. For high-frequency state (animations, large lists), use <strong>Zustand</strong> or <strong>Redux Toolkit</strong>. Context is perfect for infrequent data like theme, auth user, or locale settings.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(9)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(11)">Next: React Router &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(10)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 11: ROUTING -->
+<div class="section" id="s11">
+  <div class="section-badge">Chapter 11</div>
+  <h1>React Router</h1>
+  <p class="lead">React doesn't include routing built-in. <strong>React Router v6</strong> is the standard library for multi-page React apps with URL-based navigation — no page reloads.</p>
+
+  <h2>Install</h2>
+  <pre data-label="terminal"><code>npm install react-router-dom</code></pre>
+
+  <h2>Basic Setup</h2>
+  <pre data-label="main.jsx"><code><span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="jsx">&lt;<span class="tag">BrowserRouter</span>&gt;</span>
+    <span class="jsx">&lt;<span class="tag">App</span> /&gt;</span>
+  <span class="jsx">&lt;/<span class="tag">BrowserRouter</span>&gt;</span>
+)</code></pre>
+
+  <h2>Defining Routes</h2>
+  <pre data-label="App.jsx"><code><span class="kw">import</span> { Routes, Route } <span class="kw">from</span> <span class="str">'react-router-dom'</span>
+<span class="kw">import</span> Home <span class="kw">from</span> <span class="str">'./pages/Home'</span>
+<span class="kw">import</span> About <span class="kw">from</span> <span class="str">'./pages/About'</span>
+<span class="kw">import</span> User <span class="kw">from</span> <span class="str">'./pages/User'</span>
+<span class="kw">import</span> NotFound <span class="kw">from</span> <span class="str">'./pages/NotFound'</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="jsx">&lt;<span class="tag">Routes</span>&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/"</span>         <span class="attr">element</span>={&lt;<span class="tag">Home</span> /&gt;} /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/about"</span>    <span class="attr">element</span>={&lt;<span class="tag">About</span> /&gt;} /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/user/:id"</span> <span class="attr">element</span>={&lt;<span class="tag">User</span> /&gt;} /&gt;</span>
+      <span class="jsx">&lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"*"</span>          <span class="attr">element</span>={&lt;<span class="tag">NotFound</span> /&gt;} /&gt;</span>
+    <span class="jsx">&lt;/<span class="tag">Routes</span>&gt;</span>
+  )
+}</code></pre>
+
+  <h2>Navigation</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { Link, NavLink, useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>
+
+<span class="cmt">// Link — basic navigation (no page reload)</span>
+<span class="jsx">&lt;<span class="tag">Link</span> <span class="attr">to</span>=<span class="str">"/about"</span>&gt;</span>About<span class="jsx">&lt;/<span class="tag">Link</span>&gt;</span>
+
+<span class="cmt">// NavLink — adds 'active' class automatically</span>
+<span class="jsx">&lt;<span class="tag">NavLink</span> <span class="attr">to</span>=<span class="str">"/about"</span> <span class="attr">className</span>={({ isActive }) =&gt; isActive ? 'active' : ''}&gt;</span>
+  About
+<span class="jsx">&lt;/<span class="tag">NavLink</span>&gt;</span>
+
+<span class="cmt">// useNavigate — programmatic navigation</span>
+<span class="kw">const</span> navigate = <span class="fn">useNavigate</span>()
+<span class="fn">navigate</span>(<span class="str">'/dashboard'</span>)   <span class="cmt">// go to route</span>
+<span class="fn">navigate</span>(-<span class="num">1</span>)             <span class="cmt">// go back</span></code></pre>
+
+  <h2>URL Params &amp; Query Strings</h2>
+  <pre data-label="jsx"><code><span class="kw">import</span> { useParams, useSearchParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>
+
+<span class="cmt">// /user/42 → useParams gives { id: "42" }</span>
+<span class="kw">function</span> <span class="fn">User</span>() {
+  <span class="kw">const</span> { id } = <span class="fn">useParams</span>()
+  <span class="kw">return</span> <span class="jsx">&lt;<span class="tag">p</span>&gt;</span>User ID: {id}<span class="jsx">&lt;/<span class="tag">p</span>&gt;</span>
+}
+
+<span class="cmt">// /search?q=react → get query params</span>
+<span class="kw">const</span> [searchParams] = <span class="fn">useSearchParams</span>()
+<span class="kw">const</span> query = searchParams.<span class="fn">get</span>(<span class="str">'q'</span>)</code></pre>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(10)">&larr; Back</button>
+    <button class="btn btn-primary" onclick="goto(12)">Next: What's Next &rarr;</button>
+    <button class="btn btn-done" onclick="markDone(11)">&#10003; Mark Done</button>
+  </div>
+</div>
+
+<!-- 12: WHAT'S NEXT -->
+<div class="section" id="s12">
+  <div class="section-badge">Chapter 12 &mdash; Final</div>
+  <h1>What's Next?</h1>
+  <p class="lead">You have covered the complete React core. Here is your roadmap for going from competent to exceptional — and job-ready.</p>
+
+  <h2>Immediate Next Steps</h2>
+  <ul class="concept-list">
+    <li><div class="icon">&#127959;</div><div><strong>Build a real project</strong>A full CRUD app with routing, forms, API calls, and state. A todo app, blog, or weather app all work well.</div></li>
+    <li><div class="icon">&#127912;</div><div><strong>Learn a styling solution</strong>Pick one: <em>Tailwind CSS</em> (utility-first, most popular), <em>CSS Modules</em> (scoped CSS), or <em>styled-components</em>.</div></li>
+    <li><div class="icon">&#128269;</div><div><strong>TanStack Query (React Query)</strong>The best way to handle server state — caching, loading, errors, background re-fetching. Game-changing library.</div></li>
+  </ul>
+
+  <h2>State Management</h2>
+  <ul class="concept-list">
+    <li><div class="icon">&#128059;</div><div><strong>Zustand</strong>Minimal, fast global state. The modern go-to for most apps that need more than Context.</div></li>
+    <li><div class="icon">&#128295;</div><div><strong>Redux Toolkit</strong>Industry standard for large, complex apps. Worth learning for job readiness at bigger companies.</div></li>
+  </ul>
+
+  <h2>Production &amp; Full-Stack</h2>
+  <ul class="concept-list">
+    <li><div class="icon">&#9889;</div><div><strong>Next.js</strong>Full-stack React framework. Server-side rendering, file-based routing, API routes. The default choice for production React apps.</div></li>
+    <li><div class="icon">&#128241;</div><div><strong>React Native</strong>Use your React knowledge to build iOS and Android apps. Start with Expo — it removes all the painful native setup.</div></li>
+    <li><div class="icon">&#129514;</div><div><strong>Testing</strong>Vitest + React Testing Library for unit tests. Playwright or Cypress for end-to-end browser tests.</div></li>
+    <li><div class="icon">&#128640;</div><div><strong>TypeScript</strong>Add types to your React code. Not required but expected at most companies. Start after you're confident in React.</div></li>
+  </ul>
+
+  <h2>Your Full Learning Timeline</h2>
+  <table>
+    <tr><th>Phase</th><th>Focus</th><th>Time</th></tr>
+    <tr><td>&#10003; Done</td><td>React fundamentals (this tutorial)</td><td>2&ndash;3 weeks</td></tr>
+    <tr><td>Now</td><td>Build 2&ndash;3 real projects from scratch</td><td>4&ndash;6 weeks</td></tr>
+    <tr><td>Next</td><td>TanStack Query + Zustand or Redux</td><td>2 weeks</td></tr>
+    <tr><td>Then</td><td>Next.js + deployment (Vercel)</td><td>3&ndash;4 weeks</td></tr>
+    <tr><td>+</td><td>TypeScript integration</td><td>2 weeks</td></tr>
+    <tr><td>Always</td><td>React Native if mobile interests you</td><td>2&ndash;3 weeks</td></tr>
+  </table>
+
+  <div class="callout tip"><strong>The honest truth:</strong> Reading tutorials builds understanding. <em>Building things</em> builds skill. Aim for 30% reading, 70% building. Pick a project you actually care about — motivation is the real multiplier.</div>
+
+  <div class="callout info"><strong>Keep learning at:</strong> react.dev (official docs), Josh W Comeau's blog (joshwcomeau.com), Kent C Dodds' blog (kentcdodds.com), and ui.dev — all exceptional React resources.</div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goto(11)">&larr; Back</button>
+    <button class="btn btn-done" onclick="markDone(12)" style="margin-left:0">&#127881; Complete the Tutorial!</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+  let current = 0;
+  const total = 12;
+  const done = new Set();
+
+  function goto(n) {
+    document.getElementById('s' + current).classList.remove('active');
+    document.getElementById('nav' + current).classList.remove('active');
+    current = n;
+    document.getElementById('s' + n).classList.add('active');
+    document.getElementById('nav' + n).classList.add('active');
+    document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function markDone(n) {
+    if (n > 0) {
+      done.add(n);
+      const nav = document.getElementById('nav' + n);
+      nav.classList.add('done');
+      nav.querySelector('.nav-num').textContent = '\u2713';
+      const pct = Math.round((done.size / total) * 100);
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = done.size + ' of ' + total + ' completed';
+    }
+    if (n < 12) goto(n + 1);
+  }
+</script>
+</body>
+</html>
